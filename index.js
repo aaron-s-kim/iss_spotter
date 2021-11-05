@@ -1,28 +1,37 @@
 // index.js
 
-// let dt = 1636200875;
-// let d = new Date(0); // The 0 there is the key, which sets the date to the epoch
-// d.setUTCSeconds(dt);
-// console.log(dt);
-
-// let d = new Date(1636200875);
-// console.log(d);
-// console.log(new Date(1636200875));
-
 const { nextISSTimesForMyLocation } = require('./iss');
+
+/**
+ * Input:
+ *   Array of data objects defining the next fly-overs of the ISS.
+ *   [ { risetime: <number>, duration: <number> }, ... ]
+ * Returns:
+ *   undefined
+ * Sideffect:
+ *   Console log messages to make that data more human readable.
+ *   Example output:
+ *   Next pass at Mon Jun 10 2019 20:11:44 GMT-0700 (Pacific Daylight Time) for 468 seconds!
+ */
+const printPassTimes = function(passTimes) {
+  for (const pass of passTimes) {
+    const datetime = new Date(0);
+    datetime.setUTCSeconds(pass.risetime);
+    const duration = pass.duration;
+    console.log(`Next pass at ${datetime} for ${duration} seconds!`);
+  }
+};
 
 nextISSTimesForMyLocation((error, passTimes) => {
   if (error) {
     return console.log("It didn't work!", error);
   }
   // success, print out the deets!
-  // console.log(passTimes);
-  for (const pass of passTimes) {
-    const dt = new Date(0); // Jan 1, 1970 in UTC
-    dt.setUTCSeconds(pass.risetime); // sets seconds for specified date according to UTC
-    console.log(`Next pass at ${dt} for ${pass.duration} seconds!`);
-  }
+  printPassTimes(passTimes);
 });
+
+
+module.exports = { printPassTimes };
 
 // const { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes } = require('./iss');
 
